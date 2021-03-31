@@ -5,13 +5,14 @@ const bodyParser = require('body-parser')
 const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
+require('dotenv').config()
 
 const app = express()
 app.use(bodyParser.json()); // for parsing application/json
 app.use(cors());
 
 //Starting MongoDB Connection and DataBase Back-end 
-const uri = "mongodb+srv://easy-bazaar:easy-bazaar123@cluster0.q8ydv.mongodb.net/easy-bazaar?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.q8ydv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
     console.log('Database Error is:', err)
@@ -63,6 +64,7 @@ client.connect(err => {
         console.log(order);
         ordersCollection.insertOne(order)
         .then(result => {
+            console.log('OrderConfirm')
             console.log(result);
             res.send(result.insertedCount > 0);
         })
